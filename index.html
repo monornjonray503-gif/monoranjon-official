@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090817">
+<title>MONORANJON Official</title>
+<style>
+:root{
+ --bg:#090817;--panel:#121126;--panel2:#191733;
+ --purple:#8955ff;--blue:#398bff;--text:#f7f5ff;
+ --muted:#a6a1bd;--border:rgba(255,255,255,.09);
+ --gradient:linear-gradient(120deg,#8b5cf6,#358bff);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ background:radial-gradient(circle at 15% 0%,#211343 0,transparent 35%),
+ radial-gradient(circle at 90% 25%,#10244b 0,transparent 30%),var(--bg);
+ color:var(--text);font-family:Arial,"Noto Sans Bengali",sans-serif;
+ min-height:100vh;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.gradient-text{
+ background:var(--gradient);background-clip:text;
+ -webkit-background-clip:text;color:transparent
+}
+header{
+ position:sticky;top:0;z-index:20;
+ background:rgba(9,8,23,.9);backdrop-filter:blur(18px);
+ border-bottom:1px solid var(--border);
+ padding:13px 5%;display:flex;align-items:center;
+ justify-content:space-between;gap:12px
+}
+.brand{font-size:21px;font-weight:900;letter-spacing:1px}
+.brand span{color:#9c72ff}
+.header-actions{display:flex;gap:8px;align-items:center}
+.btn{
+ border:0;border-radius:11px;padding:11px 16px;
+ background:var(--gradient);color:white;font-weight:bold
+}
+.btn-outline{
+ background:transparent;border:1px solid var(--border);
+ color:white;border-radius:10px;padding:10px 14px
+}
+.btn-danger{background:#a52c52;color:white}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.container{width:min(1150px,92%);margin:auto}
+.hero{padding:65px 0 38px;text-align:center}
+.hero h1{font-size:clamp(34px,7vw,65px);line-height:1.15}
+.hero p{color:var(--muted);max-width:650px;margin:18px auto;line-height:1.8}
+.hero .btn{margin:7px}
+.section{padding:30px 0}
+.section-title{font-size:25px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}
+.card{
+ background:linear-gradient(145deg,rgba(28,25,57,.95),rgba(16,17,39,.95));
+ border:1px solid var(--border);border-radius:17px;
+ padding:19px;transition:.25s;min-width:0
+}
+.card:hover{transform:translateY(-3px);border-color:#8058e8}
+.card h3{margin:10px 0}
+.card p{color:var(--muted);line-height:1.65;font-size:14px}
+.icon{font-size:28px}
+.page{padding:28px 0;min-height:70vh}
+.page-title{font-size:28px;margin-bottom:8px}
+.panel{
+ background:var(--panel);border:1px solid var(--border);
+ padding:20px;border-radius:16px;margin:15px 0
+}
+input,textarea,select{
+ width:100%;background:#0c0b1c;color:white;
+ border:1px solid var(--border);padding:13px;
+ border-radius:10px;outline:none;margin:7px 0
+}
+textarea{min-height:110px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--purple)}
+label{font-size:13px;color:var(--muted)}
+.form{max-width:460px;margin:25px auto}
+.form h2{margin-bottom:15px}
+.form .btn{width:100%;margin-top:10px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+.tabs button{background:var(--panel2);color:white;border:1px solid var(--border);padding:10px 13px;border-radius:9px}
+.tabs button.active{background:var(--gradient)}
+.stat{font-size:27px;font-weight:bold;margin-top:8px}
+.list-item{padding:14px 0;border-bottom:1px solid var(--border)}
+footer{border-top:1px solid var(--border);padding:30px 0;text-align:center;color:var(--muted);margin-top:35px}
+.bottom-nav{
+ display:none;position:fixed;bottom:0;left:0;right:0;z-index:30;
+ background:#100f24;border-top:1px solid var(--border);
+ padding:9px 3%;justify-content:space-around
+}
+.bottom-nav button{background:none;border:0;color:var(--muted);font-size:11px}
+.bottom-nav button span{display:block;font-size:20px;margin-bottom:3px}
+.notice{padding:11px;background:#211a3e;border:1px solid #493477;border-radius:10px;color:#d7c8ff}
+.profile-avatar{
+ width:75px;height:75px;border-radius:50%;background:var(--gradient);
+ display:grid;place-items:center;font-size:30px;font-weight:bold
+}
+#toast{
+ position:fixed;bottom:85px;left:50%;transform:translateX(-50%);
+ background:#24213d;padding:12px 18px;border-radius:10px;
+ display:none;z-index:100;max-width:90%;text-align:center
+}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#cfc8ff}
+@media(max-width:650px){
+ header{padding:12px 4%}.brand{font-size:17px}
+ .header-actions .btn-outline{padding:8px}
+ .bottom-nav{display:flex}
+ body{padding-bottom:65px}
+ .hero{padding:48px 0 25px}
+ .container{width:92%}
+}
+</style>
+</head>
+<body>
+
+<header>
+ <a class="brand" href="#" onclick="go('home')">MONO<span>RANJON</span></a>
+ <div class="header-actions">
+  <button class="btn-outline" onclick="toggleLanguage()" id="langBtn">English</button>
+  <button class="btn-outline" id="headerLogin" onclick="go('login')">Login</button>
+  <button class="btn hidden" id="headerDash" onclick="go('dashboard')">Dashboard</button>
+ </div>
+</header>
+
+<main class="container">
+
+<!-- HOME -->
+<section id="home" class="page">
+ <div class="hero">
+  <div class="small gradient-text">PERSONAL TECHNOLOGY PLATFORM</div>
+  <h1>Welcome to<br><span class="gradient-text">MONORANJON Official</span></h1>
+  <p>Technology, Artificial Intelligence, Development, Digital Learning and Community — all in one platform.</p>
+  <button class="btn" onclick="go('register')">Create Account</button>
+  <button class="btn-outline" onclick="go('login')">Member Login</button>
+ </div>
+ <div class="notice">📢 MONORANJON Official — Members-only digital platform. All listed services are intended to be free.</div>
+
+ <div class="section">
+  <h2 class="section-title">Explore Our Platform</h2>
+  <div class="grid" id="homeCards"></div>
+ </div>
+
+ <div class="section">
+  <h2 class="section-title">About MONORANJON</h2>
+  <div class="card">
+   <h3>Personal Technology & Digital Platform</h3>
+   <p>MONORANJON Official is designed for technology learning, development, AI tools, digital resources and community activities.</p>
+   <p style="margin-top:12px">Owner / Personal Brand: <b class="gradient-text">MONORANJON</b></p>
+  </div>
+ </div>
+</section>
+
+<!-- LOGIN -->
+<section id="login" class="page hidden">
+ <div class="panel form">
+  <h2>Member Login</h2>
+  <p class="muted small">Login using your registered email and password.</p>
+  <form id="loginForm">
+   <label>Email Address</label>
+   <input id="loginEmail" type="email" required placeholder="Your email">
+   <label>Password</label>
+   <input id="loginPassword" type="password" required placeholder="Password">
+   <button class="btn" type="submit">Login</button>
+  </form>
+  <p class="small muted" style="margin-top:15px">
+   <a href="#" onclick="go('forgot')">Forgot Password?</a>
+   · <a href="#" onclick="go('register')">Create Account</a>
+  </p>
+ </div>
+</section>
+
+<!-- REGISTER -->
+<section id="register" class="page hidden">
+ <div class="panel form">
+  <h2>Create Account</h2>
+  <form id="registerForm">
+   <label>Full Name</label>
+   <input id="regName" required maxlength="60" placeholder="Your name">
+   <label>Username</label>
+   <input id="regUsername" required maxlength="25" placeholder="Username">
+   <label>Email Address</label>
+   <input id="regEmail" type="email" required placeholder="Email">
+   <label>Password</label>
+   <input id="regPassword" type="password" minlength="8" required placeholder="At least 8 characters">
+   <button class="btn" type="submit">Register</button>
+  </form>
+  <p class="small muted" style="margin-top:12px">Already have an account? <a href="#" onclick="go('login')">Login</a></p>
+ </div>
+</section>
+
+<!-- FORGOT -->
+<section id="forgot" class="page hidden">
+ <div class="panel form">
+  <h2>Reset Password</h2>
+  <input id="resetEmail" type="email" placeholder="Registered email">
+  <button class="btn" onclick="resetPassword()">Send Reset Email</button>
+ </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="page hidden">
+ <h2 class="page-title">Member Dashboard</h2>
+ <p class="muted">Welcome to your personal workspace.</p>
+ <div class="panel">
+  <div class="profile-avatar" id="dashAvatar">M</div>
+  <h2 id="dashName" style="margin-top:12px">Member</h2>
+  <p class="muted" id="dashEmail"></p>
+  <button class="btn-outline" onclick="go('profile')">Edit Profile</button>
+ </div>
+ <div class="grid">
+  <div class="card"><div class="icon">🤖</div><h3>AI Platform</h3><p>AI tools and assistant.</p><button class="btn" onclick="go('ai')">Open AI</button></div>
+  <div class="card"><div class="icon">🛠️</div><h3>Developer Zone</h3><p>Development resources.</p><button class="btn" onclick="go('developer')">Explore</button></div>
+  <div class="card"><div class="icon">🌐</div><h3>Community</h3><p>Text-based community.</p><button class="btn" onclick="go('community')">Open</button></div>
+  <div class="card"><div class="icon">🎫</div><h3>Support</h3><p>Get technical support.</p><button class="btn" onclick="go('support')">Get Help</button></div>
+ </div>
+ <div class="panel">
+  <h3>Account Information</h3>
+  <p id="dashStatus" class="muted">Checking account...</p>
+  <button class="btn-outline" onclick="go('profile')">Profile Settings</button>
+  <button class="btn-outline" onclick="logout()">Logout</button>
+ </div>
+</section>
+
+<!-- PROFILE -->
+<section id="profile" class="page hidden">
+ <h2 class="page-title">Personal Profile</h2>
+ <div class="panel">
+  <p class="muted small">Your profile information. Image upload is not enabled.</p>
+  <label>Full Name</label><input id="profileName" maxlength="60">
+  <label>Username</label><input id="profileUsername" maxlength="25">
+  <label>Email</label><input id="profileEmail" disabled>
+  <button class="btn" onclick="saveProfile()">Save Profile</button>
+  <button class="btn-outline" onclick="sendVerification()">Send Email Verification</button>
+  <button class="btn-danger btn" onclick="logout()">Logout</button>
+ </div>
+</section>
+
+<!-- AI -->
+<section id="ai" class="page hidden">
+ <h2 class="page-title">MONORANJON AI Platform</h2>
+ <p class="muted">AI assistant interface. A secure server API is required to generate real answers.</p>
+ <div class="panel">
+  <div id="aiOutput" class="list-item">Your AI response will appear here.</div>
+  <textarea id="aiPrompt" placeholder="Write your question..."></textarea>
+  <button class="btn" onclick="askAI()">Ask AI</button>
+  <p class="small muted" style="margin-top:10px">Coding · Writing · Study · Translation · Summarization · Debugging</p>
+ </div>
+</section>
+
+<!-- TECHNOLOGY -->
+<section id="technology" class="page hidden">
+ <h2 class="page-title">Technology Zone</h2>
+ <div class="grid">
+  <div class="card"><div class="icon">💻</div><h3>Web Development</h3><p>HTML, CSS, JavaScript and responsive design learning.</p></div>
+  <div class="card"><div class="icon">📱</div><h3>App Development</h3><p>Android development concepts and tutorials.</p></div>
+  <div class="card"><div class="icon">☁️</div><h3>Cloud Technology</h3><p>Firebase, GitHub and deployment learning.</p></div>
+  <div class="card"><div class="icon">🧠</div><h3>Artificial Intelligence</h3><p>AI concepts and responsible use.</p></div>
+ </div>
+</section>
+
+<!-- CYBERSECURITY -->
+<section id="cybersecurity" class="page hidden">
+ <h2 class="page-title">Cybersecurity Learning</h2>
+ <div class="grid">
+  <div class="card"><h3>🔐 Account Security</h3><p>Strong passwords, MFA and account protection.</p></div>
+  <div class="card"><h3>🛡️ Web Security</h3><p>Secure coding, input validation and safe configuration.</p></div>
+  <div class="card"><h3>🎓 Ethical Learning</h3><p>Networking, Linux and authorized security labs.</p></div>
+  <div class="card"><h3>⚠️ Phishing Awareness</h3><p>Recognize suspicious links and online scams.</p></div>
+ </div>
+</section>
+
+<!-- DEVELOPER -->
+<section id="developer" class="page hidden">
+ <h2 class="page-title">Developer Zone</h2>
+ <div class="grid">
+  <div class="card"><h3>HTML Playground</h3><p>Write and preview basic HTML.</p><button class="btn" onclick="go('playground')">Open</button></div>
+  <div class="card"><h3>JSON Formatter</h3><p>Format JSON data.</p><button class="btn" onclick="go('json')">Open</button></div>
+  <div class="card"><h3>Code Learning</h3><p>Learn web development step by step.</p></div>
+  <div class="card"><h3>API Learning</h3><p>Understand API concepts and documentation.</p></div>
+ </div>
+</section>
+
+<!-- PLAYGROUND -->
+<section id="playground" class="page hidden">
+ <h2 class="page-title">HTML Playground</h2>
+ <textarea id="htmlCode" placeholder="Write HTML code here"><h1>Hello MONORANJON!</h1></textarea>
+ <button class="btn" onclick="previewHTML()">Preview</button>
+ <div class="panel"><iframe id="htmlPreview" title="HTML preview" sandbox style="width:100%;height:260px;background:white;border:0;border-radius:10px"></iframe></div>
+</section>
+
+<!-- JSON -->
+<section id="json" class="page hidden">
+ <h2 class="page-title">JSON Formatter</h2>
+ <textarea id="jsonInput" placeholder='{"name":"MONORANJON"}'></textarea>
+ <button class="btn" onclick="formatJSON()">Format JSON</button>
+ <pre id="jsonOutput" class="panel"></pre>
+</section>
+
+<!-- TOOLS -->
+<section id="tools" class="page hidden">
+ <h2 class="page-title">Digital Tools</h2>
+ <div class="grid">
+  <div class="card"><h3>🧮 Calculator</h3>
+   <input id="calcInput" placeholder="Example: 20+30*2">
+   <button class="btn" onclick="calculate()">Calculate</button>
+   <p id="calcResult"></p>
+  </div>
+  <div class="card"><h3>🔤 Word Counter</h3>
+   <textarea id="wordText" placeholder="Write text..." oninput="countWords()"></textarea>
+   <p id="wordResult">Words: 0</p>
+  </div>
+  <div class="card"><h3>🎨 Color Picker</h3>
+   <input type="color" id="colorInput" value="#8955ff">
+   <p id="colorValue">#8955ff</p>
+  </div>
+  <div class="card"><h3>🔗 URL Encoder</h3>
+   <input id="urlInput" placeholder="Enter text">
+   <button class="btn" onclick="encodeURL()">Encode</button>
+   <p id="urlResult"></p>
+  </div>
+ </div>
+</section>
+
+<!-- GAMING -->
+<section id="gaming" class="page hidden">
+ <h2 class="page-title">Gaming Zone</h2>
+ <div class="card"><h3>🎮 Gaming News & Guides</h3><p>Gaming tips, reviews, updates and educational content will appear here.</p></div>
+</section>
+
+<!-- MEDIA -->
+<section id="media" class="page hidden">
+ <h2 class="page-title">Media Center</h2>
+ <div class="notice">Media upload is disabled. This section is for approved text and external media links only.</div>
+ <div class="card" style="margin-top:15px"><h3>Media & Resources</h3><p>Approved media resources can be listed here.</p></div>
+</section>
+
+<!-- NEWS -->
+<section id="news" class="page hidden">
+ <h2 class="page-title">News & Updates</h2>
+ <div id="newsList" class="panel">No announcements published yet.</div>
+</section>
+
+<!-- DOWNLOADS -->
+<section id="downloads" class="page hidden">
+ <h2 class="page-title">Downloads</h2>
+ <div class="notice">Only authorized and approved resources should be listed here.</div>
+ <div class="panel">No download resources have been published yet.</div>
+</section>
+
+<!-- TUTORIALS -->
+<section id="tutorials" class="page hidden">
+ <h2 class="page-title">Tutorials & Learning</h2>
+ <div class="grid">
+  <div class="card"><h3>HTML Basics</h3><p>Learn the structure of web pages.</p></div>
+  <div class="card"><h3>CSS Basics</h3><p>Learn styling and responsive design.</p></div>
+  <div class="card"><h3>JavaScript Basics</h3><p>Learn programming fundamentals.</p></div>
+  <div class="card"><h3>Firebase Basics</h3><p>Learn authentication and database concepts.</p></div>
+ </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="community" class="page hidden">
+ <h2 class="page-title">Public Community</h2>
+ <p class="muted">Registered members can publish text posts. Media uploads are disabled.</p>
+ <div class="panel">
+  <textarea id="postText" maxlength="2000" placeholder="Write a community post..."></textarea>
+  <button class="btn" onclick="createPost()">Publish Post</button>
+ </div>
+ <div id="communityPosts"></div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="page hidden">
+ <h2 class="page-title">Projects & Portfolio</h2>
+ <div class="card"><h3>MONORANJON Projects</h3><p>Personal projects, development work and portfolio items will be shown here.</p></div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="page hidden">
+ <h2 class="page-title">Free Services</h2>
+ <div class="grid">
+  <div class="card"><h3>Website Guidance</h3><p>Basic website development guidance.</p></div>
+  <div class="card"><h3>Firebase Guidance</h3><p>Firebase configuration and learning.</p></div>
+  <div class="card"><h3>Android Guidance</h3><p>Android app development learning.</p></div>
+  <div class="card"><h3>Design Guidance</h3><p>Basic logo and banner design guidance.</p></div>
+  <div class="card"><h3>Cybersecurity Awareness</h3><p>Basic online safety education.</p></div>
+  <div class="card"><h3>Troubleshooting</h3><p>Basic technical problem-solving guidance.</p></div>
+ </div>
+</section>
+
+<!-- SUPPORT -->
+<section id="support" class="page hidden">
+ <h2 class="page-title">Support Center</h2>
+ <div class="grid">
+  <div class="card"><h3>WhatsApp</h3><p>01893109600</p><a class="btn" href="https://wa.me/8801893109600" target="_blank" rel="noopener">Contact</a></div>
+  <div class="card"><h3>Telegram</h3><p>@Monoranjonfire</p><a class="btn" href="https://t.me/Monoranjonfire" target="_blank" rel="noopener">Contact</a></div>
+ </div>
+ <div class="panel">
+  <h3>Create Support Ticket</h3>
+  <label>Category</label>
+  <select id="ticketCategory">
+   <option>Login / Registration</option><option>AI Tool</option>
+   <option>Website</option><option>Community</option>
+   <option>Account Security</option><option>Technical Support</option>
+   <option>General Inquiry</option>
+  </select>
+  <textarea id="ticketMessage" maxlength="3000" placeholder="Describe your problem..."></textarea>
+  <button class="btn" onclick="createTicket()">Submit Ticket</button>
+ </div>
+ <div class="panel"><h3>FAQ</h3>
+  <p class="list-item">Is registration required? Yes, for member features.</p>
+  <p class="list-item">Are services paid? The platform is planned for free services.</p>
+  <p class="list-item">Can I upload videos? No, user media uploads are disabled.</p>
+ </div>
+</section>
+
+<!-- ADMIN -->
+<section id="admin" class="page hidden">
+ <h2 class="page-title">Admin Control Panel</h2>
+ <div class="notice">Protected area — requires a verified Firebase admin custom claim.</div>
+ <div class="grid" style="margin-top:15px">
+  <div class="card"><h3>Admin Status</h3><p id="adminStatus">Checking authorization...</p></div>
+  <div class="card"><h3>Support Tickets</h3><div class="stat" id="ticketCount">—</div></div>
+  <div class="card"><h3>Community Posts</h3><div class="stat" id="postCount">—</div></div>
+ </div>
+ <div class="panel">
+  <h3>Support Ticket Management</h3>
+  <button class="btn" onclick="loadAdminData()">Refresh Data</button>
+  <div id="adminTickets"></div>
+ </div>
+ <div class="panel">
+  <h3>Community Moderation</h3>
+  <div id="adminPosts"></div>
+ </div>
+ <div class="panel">
+  <h3>Admin Security</h3>
+  <p class="muted">Admin permissions are checked using Firebase ID token custom claims. Never assign admin permissions from this public page.</p>
+ </div>
+</section>
+
+<!-- PRIVACY -->
+<section id="privacy" class="page hidden">
+ <h2 class="page-title">Privacy Policy</h2>
+ <div class="panel">
+  <p>MONORANJON Official may process account details such as name, username and email to provide member services.</p>
+  <p style="margin-top:12px">Do not publish passwords, sensitive personal information or private credentials. A complete privacy policy must be reviewed and finalized before public launch.</p>
+  <p style="margin-top:12px">For account deletion or data requests, contact the support channel.</p>
+ </div>
+</section>
+
+<!-- TERMS -->
+<section id="terms" class="page hidden">
+ <h2 class="page-title">Terms & Community Guidelines</h2>
+ <div class="panel">
+  <p>Use the platform lawfully and respectfully. Do not post scams, spam, harmful links, private information or unauthorized material.</p>
+  <p style="margin-top:12px">Cybersecurity content is for education and authorized testing only.</p>
+  <p style="margin-top:12px">The final terms must be reviewed before the website is publicly launched.</p>
+ </div>
+</section>
+
+</main>
+
+<nav class="bottom-nav">
+ <button onclick="go('home')"><span>⌂</span>Home</button>
+ <button onclick="go('dashboard')"><span>▦</span>Dashboard</button>
+ <button onclick="go('ai')"><span>✦</span>AI</button>
+ <button onclick="go('community')"><span>◎</span>Community</button>
+ <button onclick="go('profile')"><span>♙</span>Profile</button>
+</nav>
+
+<footer>
+ <div class="brand">MONO<span>RANJON</span></div>
+ <p style="margin:10px">Personal Technology & Digital Platform</p>
+ <p class="small">© <span id="year"></span> MONORANJON Official</p>
+ <p style="margin-top:12px" class="small">
+  <a href="#" onclick="go('privacy')">Privacy</a> ·
+  <a href="#" onclick="go('terms')">Terms</a> ·
+  <a href="#" onclick="go('support')">Support</a>
+ </p>
+</footer>
+
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp } from
+ "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import {
+ getAuth,onAuthStateChanged,createUserWithEmailAndPassword,
+ signInWithEmailAndPassword,sendEmailVerification,
+ sendPasswordResetEmail,signOut
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import {
+ getFirestore,doc,setDoc,getDoc,collection,addDoc,
+ query,orderBy,limit,getDocs,updateDoc,deleteDoc,serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+/* 1. PASTE YOUR FIREBASE WEB CONFIG HERE */
+const firebaseConfig = {
+ apiKey: "YOUR_FIREBASE_API_KEY",
+ authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+ projectId: "YOUR_PROJECT_ID",
+ storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+ messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+ appId: "YOUR_FIREBASE_APP_ID"
+};
+
+/* 2. BACKEND AI URL — KEEP EMPTY UNTIL A SECURE API EXISTS */
+const AI_API_URL = "";
+
+let app,auth,db,currentUser=null,isAdmin=false;
+let firebaseReady=false;
+const $ = id => document.getElementById(id);
+
+function toast(message){
+ const el=$("toast");el.textContent=message;el.style.display="block";
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>el.style.display="none",3500);
+}
+
+const modules=[
+ ["🤖","AI Platform","ai"],["💻","Technology","technology"],
+ ["🛡️","Cybersecurity","cybersecurity"],["🧑‍💻","Developer Zone","developer"],
+ ["🧰","Digital Tools","tools"],["🎮","Gaming","gaming"],
+ ["🎬","Media Center","media"],["📰","News & Updates","news"],
+ ["📥","Downloads","downloads"],["📚","Tutorials","tutorials"],
+ ["🌐","Community","community"],["🚀","Projects","projects"],
+ ["🎁","Free Services","services"],["🎫","Support Center","support"]
+];
+
+$("homeCards").innerHTML=modules.map(m=>`
+ <div class="card" onclick="go('${m[2]}')" style="cursor:pointer">
+  <div class="icon">${m[0]}</div><h3>${m[1]}</h3>
+  <p>Explore ${m[1]}.</p>
+ </div>`).join("");
+
+$("year").textContent=new Date().getFullYear();
+
+window.go=function(id){
+ if(["dashboard","profile","ai","community","support","admin"].includes(id)&&!currentUser){
+  toast("Please login first.");id="login";
+ }
+ if(id==="admin"&&currentUser&&!isAdmin){
+  toast("Admin permission required.");id="dashboard";
+ }
+ document.querySelectorAll("main > section").forEach(s=>s.classList.add("hidden"));
+ const page=$(id);if(page)page.classList.remove("hidden");
+ window.scrollTo(0,0);
+ if(id==="community")loadCommunity();
+ if(id==="dashboard")renderDashboard();
+ if(id==="profile")renderProfile();
+ if(id==="admin")loadAdminData();
+};
+
+window.toggleLanguage=function(){
+ const english=document.documentElement.lang==="bn";
+ document.documentElement.lang=english?"en":"bn";
+ $("langBtn").textContent=english?"বাংলা":"English";
+ toast(english?"Language switched to English.":"ভাষা পরিবর্তন করা হয়েছে।");
+};
+
+async function initFirebase(){
+ try{
+  if(firebaseConfig.apiKey==="YOUR_FIREBASE_API_KEY"||
+     firebaseConfig.projectId==="YOUR_PROJECT_ID"){
+   toast("আগে Firebase Config বসাও।");
+   return;
+  }
+  app=initializeApp(firebaseConfig);
+  auth=getAuth(app);
+  db=getFirestore(app);
+  firebaseReady=true;
+
+  onAuthStateChanged(auth,async user=>{
+   currentUser=user;isAdmin=false;
+   if(user){
+    try{
+     const token=await user.getIdTokenResult(true);
+     isAdmin=token.claims.admin===true;
+    }catch(e){console.error(e)}
+    $("headerLogin").classList.add("hidden");
+    $("headerDash").classList.remove("hidden");
+    if(location.hash==="#admin"&&!isAdmin)location.hash="";
+    renderDashboard();
+   }else{
+    $("headerLogin").classList.remove("hidden");
+    $("headerDash").classList.add("hidden");
+   }
+  });
+ }catch(error){
+  console.error(error);toast("Firebase setup error: "+error.message);
+ }
+}
+initFirebase();
+
+$("registerForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!firebaseReady)return toast("Firebase Config setup করো।");
+ const name=$("regName").value.trim();
+ const username=$("regUsername").value.trim();
+ const email=$("regEmail").value.trim();
+ const password=$("regPassword").value;
+ try{
+  const result=await createUserWithEmailAndPassword(auth,email,password);
+  await setDoc(doc(db,"users",result.user.uid),{
+   uid:result.user.uid,name,username,email,
+   createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+  });
+  await sendEmailVerification(result.user);
+  toast("Account created. Verify your email.");
+  go("dashboard");
+ }catch(error){toast(error.message)}
+});
+
+$("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!firebaseReady)return toast("Firebase Config setup করো।");
+ try{
+  await signInWithEmailAndPassword(
+   auth,$("loginEmail").value.trim(),$("loginPassword").value
+  );
+  toast("Login successful.");go("dashboard");
+ }catch(error){toast(error.message)}
+});
+
+window.resetPassword=async()=>{
+ if(!firebaseReady)return toast("Firebase setup required.");
+ const email=$("resetEmail").value.trim();
+ if(!email)return toast("Enter your email.");
+ try{
+  await sendPasswordResetEmail(auth,email);
+  toast("Password reset email sent.");
+ }catch(error){toast(error.message)}
+};
+
+window.logout=async()=>{
+ if(!auth)return;
+ try{await signOut(auth);isAdmin=false;go("home");toast("Logged out.");}
+ catch(error){toast(error.message)}
+};
+
+window.sendVerification=async()=>{
+ if(!currentUser)return;
+ try{await sendEmailVerification(currentUser);toast("Verification email sent.");}
+ catch(error){toast(error.message)}
+};
+
+async function getUserProfile(){
+ if(!currentUser||!db)return null;
+ const ref=doc(db,"users",currentUser.uid);
+ const snap=await getDoc(ref);
+ return snap.exists()?snap.data():null;
+}
+
+window.renderDashboard=async()=>{
+ if(!currentUser)return;
+ $("dashEmail").textContent=currentUser.email||"";
+ $("dashAvatar").textContent=(currentUser.email||"M").charAt(0).toUpperCase();
+ $("dashStatus").textContent=currentUser.emailVerified?
+  "Email verified":"Email not verified";
+ try{
+  const data=await getUserProfile();
+  $("dashName").textContent=data?.name||"Member";
+ }catch(e){console.error(e)}
+};
+
+window.renderProfile=async()=>{
+ if(!currentUser)return;
+ $("profileEmail").value=currentUser.email||"";
+ try{
+  const data=await getUserProfile();
+  $("profileName").value=data?.name||"";
+  $("profileUsername").value=data?.username||"";
+ }catch(e){toast(e.message)}
+};
+
+window.saveProfile=async()=>{
+ if(!currentUser)return;
+ const name=$("profileName").value.trim();
+ const username=$("profileUsername").value.trim();
+ if(!name||!username)return toast("Name and username required.");
+ try{
+  await updateDoc(doc(db,"users",currentUser.uid),{
+   name,username,updatedAt:serverTimestamp()
+  });
+  toast("Profile updated.");renderDashboard();
+ }catch(error){toast(error.message)}
+};
+
+window.askAI=async()=>{
+ if(!currentUser)return toast("Login required.");
+ const prompt=$("aiPrompt").value.trim();
+ if(!prompt)return toast("Write your question.");
+ if(!AI_API_URL)return toast("AI Backend API এখনো সংযুক্ত করা হয়নি।");
+ $("aiOutput").textContent="Please wait...";
+ try{
+  const response=await fetch(AI_API_URL,{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({prompt})
+  });
+  if(!response.ok)throw new Error("AI service unavailable");
+  const data=await response.json();
+  $("aiOutput").textContent=data.answer||"No response returned.";
+ }catch(error){$("aiOutput").textContent=error.message}
+};
+
+window.createPost=async()=>{
+ if(!currentUser)return toast("Login required.");
+ const content=$("postText").value.trim();
+ if(!content)return toast("Write a post first.");
+ try{
+  await addDoc(collection(db,"posts"),{
+   uid:currentUser.uid,
+   author:currentUser.email,
+   text:content,
+   createdAt:serverTimestamp()
+  });
+  $("postText").value="";
+  toast("Post published.");loadCommunity();
+ }catch(error){toast(error.message)}
+};
+
+window.loadCommunity=async()=>{
+ if(!currentUser||!db)return;
+ const box=$("communityPosts");box.textContent="Loading posts...";
+ try{
+  const q=query(collection(db,"posts"),orderBy("createdAt","desc"),limit(30));
+  const result=await getDocs(q);
+  box.innerHTML="";
+  result.forEach(item=>{
+   const d=item.data();
+   const article=document.createElement("div");
+   article.className="panel";
+   const title=document.createElement("b");
+   title.textContent=d.author||"Member";
+   const text=document.createElement("p");
+   text.style.marginTop="12px";
+   text.style.whiteSpace="pre-wrap";
+   text.textContent=d.text||"";
+   article.append(title,text);
+   box.appendChild(article);
+  });
+  if(!result.size)box.textContent="No posts yet.";
+ }catch(error){box.textContent=error.message}
+};
+
+window.createTicket=async()=>{
+ if(!currentUser)return toast("Login required.");
+ const message=$("ticketMessage").value.trim();
+ const category=$("ticketCategory").value;
+ if(!message)return toast("Write your problem.");
+ try{
+  await addDoc(collection(db,"tickets"),{
+   uid:currentUser.uid,email:currentUser.email,
+   category,message,status:"open",priority:"normal",
+   createdAt:serverTimestamp()
+  });
+  $("ticketMessage").value="";
+  toast("Support ticket submitted.");
+ }catch(error){toast(error.message)}
+};
+
+window.loadAdminData=async()=>{
+ if(!currentUser||!isAdmin)return toast("Admin access denied.");
+ $("adminStatus").textContent="Authorized admin";
+ try{
+  const ticketQuery=query(collection(db,"tickets"),orderBy("createdAt","desc"),limit(50));
+  const postQuery=query(collection(db,"posts"),orderBy("createdAt","desc"),limit(50));
+  const [tickets,posts]=await Promise.all([getDocs(ticketQuery),getDocs(postQuery)]);
+  $("ticketCount").textContent=tickets.size;
+  $("postCount").textContent=posts.size;
+  $("adminTickets").innerHTML="";
+  tickets.forEach(item=>{
+   const d=item.data();
+   const row=document.createElement("div");
+   row.className="list-item";
+   const info=document.createElement("p");
+   info.textContent=(d.category||"Support")+" | "+(d.email||"")+" | "+(d.status||"open");
+   const message=document.createElement("p");
+   message.textContent=d.message||"";
+   const select=document.createElement("select");
+   ["open","in_progress","resolved","closed"].forEach(s=>{
+    const op=document.createElement("option");op.value=s;op.textContent=s;
+    if(s===(d.status||"open"))op.selected=true;
+    select.appendChild(op);
+   });
+   const save=document.createElement("button");
+   save.className="btn";save.textContent="Update Status";
+   save.onclick=async()=>{
+    try{
+     await updateDoc(doc(db,"tickets",item.id),{status:select.value});
+     toast("Ticket updated.");loadAdminData();
+    }catch(e){toast(e.message)}
+   };
+   row.append(info,message,select,save);
+   $("adminTickets").appendChild(row);
+  });
+  $("adminPosts").innerHTML="";
+  posts.forEach(item=>{
+   const d=item.data();
+   const row=document.createElement("div");
+   row.className="list-item";
+   const p=document.createElement("p");p.textContent=d.text||"";
+   const del=document.createElement("button");
+   del.className="btn btn-danger";del.textContent="Delete Post";
+   del.onclick=async()=>{
+    if(!confirm("Delete this post?"))return;
+    try{await deleteDoc(doc(db,"posts",item.id));toast("Post deleted.");loadAdminData()}
+    catch(e){toast(e.message)}
+   };
+   row.append(p,del);$("adminPosts").appendChild(row);
+  });
+ }catch(error){toast("Admin data error: "+error.message)}
+};
+
+window.previewHTML=()=>{
+ const code=$("htmlCode").value;
+ $("htmlPreview").srcdoc=code;
+};
+
+window.formatJSON=()=>{
+ try{
+  $("jsonOutput").textContent=JSON.stringify(JSON.parse($("jsonInput").value),null,2);
+ }catch(e){$("jsonOutput").textContent="Invalid JSON: "+e.message}
+};
+
+window.calculate=()=>{
+ const expression=$("calcInput").value.trim();
+ if(!/^[0-9+\-*/().%\s]+$/.test(expression))return toast("Invalid calculation.");
+ try{
+  const result=Function('"use strict";return ('+expression+')')();
+  $("calcResult").textContent=Number.isFinite(result)?String(result):"Invalid result";
+ }catch(e){$("calcResult").textContent="Invalid expression"}
+};
+
+window.countWords=()=>{
+ const text=$("wordText").value.trim();
+ const count=text?text.split(/\s+/).length:0;
+ $("wordResult").textContent="Words: "+count;
+};
+
+$("colorInput").addEventListener("input",()=>{
+ $("colorValue").textContent=$("colorInput").value;
+ $("colorValue").style.color=$("colorInput").value;
+});
+
+window.encodeURL=()=>{
+ $("urlResult").textContent=encodeURIComponent($("urlInput").value);
+};
+
+window.addEventListener("hashchange",()=>{
+ const id=location.hash.replace("#","");
+ if(id&&$(id))go(id);
+});
+</script>
+</body>
+</html>
